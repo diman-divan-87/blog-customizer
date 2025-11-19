@@ -7,9 +7,22 @@ import clsx from 'clsx';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
+import {
+	ArticleStateType,
+	fontFamilyOptions,
+	OptionType,
+} from 'src/constants/articleProps';
 
-export const ArticleParamsForm = () => {
+interface IProps {
+	cbUpdateSettings: (settings: ArticleStateType) => void;
+	settings: ArticleStateType;
+}
+
+export const ArticleParamsForm = (props: IProps) => {
+	const { cbUpdateSettings, settings } = props;
+
 	const [isOpenedSideBar, setIsOpenedSideBar] = useState(false);
+
 	const toggleSideBar = (isOpenedSideBar: boolean) => {
 		setIsOpenedSideBar(!isOpenedSideBar);
 	};
@@ -19,7 +32,13 @@ export const ArticleParamsForm = () => {
 		{ title: '3 опция', value: '3 опция', className: '' },
 		{ title: '4 опция', value: '4 опция', className: '' },
 	];
-	const [selected, setSelected] = useState(options[0]);
+	const [selected, setSelected] = useState(settings.fontFamilyOption);
+
+	const setTargetSelect = (options: OptionType) => {
+		console.log('options = ', options);
+		setSelected(options);
+		cbUpdateSettings(settings);
+	};
 
 	return (
 		<>
@@ -35,10 +54,10 @@ export const ArticleParamsForm = () => {
 				})}>
 				<form className={styles.form}>
 					<Select
-						selected={selected}
-						onChange={setSelected}
-						options={options}
-						title='Название выпадающего списка'
+						selected={settings.fontFamilyOption}
+						onChange={setTargetSelect}
+						options={fontFamilyOptions}
+						title='шрифт'
 					/>
 					<RadioGroup
 						name={'radioGroupName'}
