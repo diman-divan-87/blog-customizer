@@ -2,11 +2,12 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
 import {
 	ArticleStateType,
 	backgroundColors,
@@ -16,6 +17,7 @@ import {
 	fontSizeOptions,
 	OptionType,
 } from 'src/constants/articleProps';
+import { useOutsideClick } from '../customHooks/useOutsideClick';
 
 interface IProps {
 	cbUpdateSettings: (settings: ArticleStateType) => void;
@@ -37,6 +39,8 @@ export const ArticleParamsForm = (props: IProps) => {
 	const [contentWidth, setContentWidth] = useState(settings.contentWidth);
 	const [fontSizeOption, setFontSizeOption] = useState(settings.fontSizeOption);
 
+	const refForm = useRef<HTMLFormElement | null>(null);
+
 	const toggleSideBar = (isOpenedSideBar: boolean) => {
 		setIsOpenedSideBar(!isOpenedSideBar);
 	};
@@ -47,10 +51,15 @@ export const ArticleParamsForm = (props: IProps) => {
 		setBackgroundColor(settings.backgroundColor);
 		setContentWidth(settings.contentWidth);
 		setFontSizeOption(settings.fontSizeOption);
+		applyValues();
 	};
 
 	const submitSetting = (e: FormEvent) => {
 		e.preventDefault();
+		applyValues();
+	};
+
+	const applyValues = () => {
 		cbUpdateSettings({
 			fontFamilyOption: fontFamilyOption,
 			fontColor: fontColor,
@@ -58,7 +67,14 @@ export const ArticleParamsForm = (props: IProps) => {
 			contentWidth: contentWidth,
 			fontSizeOption: fontSizeOption,
 		});
+		toggleSideBar(true);
 	};
+
+	useOutsideClick({
+		isCheck: isOpenedSideBar,
+		ref: refForm,
+		onFnc: () => setIsOpenedSideBar(false),
+	});
 
 	return (
 		<>
@@ -72,7 +88,10 @@ export const ArticleParamsForm = (props: IProps) => {
 				className={clsx(styles.container, {
 					[styles.container_open]: isOpenedSideBar,
 				})}>
-				<form className={styles.form} onSubmit={submitSetting}>
+				<form className={styles.form} onSubmit={submitSetting} ref={refForm}>
+					<Text as='h2' size={31} weight={800} uppercase>
+						Задайте параметры
+					</Text>
 					<Select
 						selected={fontFamilyOption}
 						onChange={setFontFamilyOption}
@@ -93,11 +112,7 @@ export const ArticleParamsForm = (props: IProps) => {
 						options={fontColors}
 						title='цвет шрифта'
 					/>
-					<br />
-					<br />
 					<Separator />
-					<br />
-					<br />
 					<Select
 						selected={backgroundColor}
 						onChange={setBackgroundColor}
