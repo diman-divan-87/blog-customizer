@@ -38,6 +38,7 @@ const App = () => {
 			<ArticleParamsForm
 				cbUpdateSettings={updateSettings}
 				settings={settings}
+				defaultArticleState={defaultArticleState}
 			/>
 			<Article />
 		</main>

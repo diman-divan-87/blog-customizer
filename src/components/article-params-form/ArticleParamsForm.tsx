@@ -22,10 +22,11 @@ import { useOutsideClick } from '../customHooks/useOutsideClick';
 interface IProps {
 	cbUpdateSettings: (settings: ArticleStateType) => void;
 	settings: ArticleStateType;
+	defaultArticleState: ArticleStateType;
 }
 
 export const ArticleParamsForm = (props: IProps) => {
-	const { cbUpdateSettings, settings } = props;
+	const { cbUpdateSettings, settings, defaultArticleState } = props;
 
 	const [isOpenedSideBar, setIsOpenedSideBar] = useState(false);
 
@@ -46,12 +47,19 @@ export const ArticleParamsForm = (props: IProps) => {
 	};
 
 	const defaultSetting = () => {
-		setFontFamilyOption(settings.fontFamilyOption);
-		setFontColor(settings.fontColor);
-		setBackgroundColor(settings.backgroundColor);
-		setContentWidth(settings.contentWidth);
-		setFontSizeOption(settings.fontSizeOption);
-		applyValues();
+		setFontFamilyOption(defaultArticleState.fontFamilyOption);
+		setFontColor(defaultArticleState.fontColor);
+		setBackgroundColor(defaultArticleState.backgroundColor);
+		setContentWidth(defaultArticleState.contentWidth);
+		setFontSizeOption(defaultArticleState.fontSizeOption);
+		cbUpdateSettings({
+			fontFamilyOption: defaultArticleState.fontFamilyOption,
+			fontColor: defaultArticleState.fontColor,
+			backgroundColor: defaultArticleState.backgroundColor,
+			contentWidth: defaultArticleState.contentWidth,
+			fontSizeOption: defaultArticleState.fontSizeOption,
+		});
+		toggleSideBar(true);
 	};
 
 	const submitSetting = (e: FormEvent) => {

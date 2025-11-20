@@ -14,8 +14,16 @@ export const useOutsideClick = ({ isCheck, ref, onFnc }: Props) => {
 				onFnc();
 			}
 		};
+
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
+				onFnc();
+			}
+		};
+		document.addEventListener('keydown', handleEscape);
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => {
+			document.removeEventListener('keydown', handleEscape);
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, [isCheck]);
